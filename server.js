@@ -76,6 +76,14 @@ app.get("/other", function(req, res) {
   }
 });
 
+app.get("/logout", function(req, res) {
+  // clear cookie and session
+  res.clearCookie("token");
+  req.session.destroy();
+
+  res.redirect("/");
+});
+
 app.post("/login", function(req, res) {
   // look for user that matches the posted username and password
   for (var i = 0; i < users.length; i++) {
