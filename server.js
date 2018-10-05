@@ -29,7 +29,7 @@ app.use(session({
   secret: "yolo", 
   resave: false,
   saveUninitialized: true,
-  cookie: {secure: "auto", maxAge: 99999}
+  cookie: {secure: "auto"}
 }));
 
 // start web server
@@ -93,7 +93,7 @@ app.post("/login", function(req, res) {
       users[i].token = token;
 
       // also set token as a cookie that browser can read
-      res.cookie("token", token);
+      res.cookie("token", token, {expires: new Date(Date.now() + 999999999)});
 
       // and save user object on session for back-end to continue to use
       req.session.user = users[i];
