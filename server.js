@@ -43,16 +43,22 @@ app.get("/", function(req, res) {
     res.send(`welcome back, ${req.session.user.name}. are you still ${req.session.user.age} years old?`);
   }
   // then check cookie
-  else if (req.cookie) {
-    // by comparing cookie token against db records
+  else if (req.headers.cookie.indexOf("token=") !== -1) {
+    // use regex to grab cookie from headers string
+    var cookie = req.headers.cookie.match(/(?<=token=)[^ ;]*/)[0];
+    // compare cookie against db records
     for (var i = 0; i < users.length; i++) {
-      if (users[i].token === req.cookie.token) {  
+      if (users[i].token === cookie) {  
         // save user object on session for back-end to continue to use
         req.session.user = users[i];
   
         return res.redirect("/");
       }
     }
+
+    // no match, so clear cookie
+    res.clearCookie("token");
+    res.redirect("/");
   }
   // if no session or cookie, send initial login form
   else {
